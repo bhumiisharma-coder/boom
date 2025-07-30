@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admission Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #111827;
+      color: #374151;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem;
+      margin: 2rem;
+    }
+
+    .form-title {
+      color: #2563eb;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: #f3f4f6;
+      color: #111827;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .success-message h2 {
+      color: #10b981;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #3b82f6;
+      opacity: 0;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="formContainer">
+    <h1 class="form-title">Admission Form</h1>
+    <form id="form">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" name="fullName" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Inquiry Type</label>
+        <select class="form-control" name="inquiryType" required>
+          <option value="" disabled selected>Select inquiry type</option>
+          <option value="Course Information">Course Information</option>
+          <option value="Technical Support">Technical Support</option>
+          <option value="Feedback">Feedback</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Message</label>
+        <textarea class="form-control" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn">Submit</button>
+    </form>
+  </div>
+
+  <div class="container success-message" id="successMessage">
+    <h2>Thanks for your submission!</h2>
+    <p>We will contact you soon.</p>
+  </div>
+
+  <script>
+    function createConfetti() {
+      const colors = ['#2563eb', '#3b82f6', '#10b981', '#f59e0b'];
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        const size = Math.random() * 10 + 5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * 100;
+        const duration = Math.random() * 3 + 2;
+
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        confetti.style.backgroundColor = color;
+        confetti.style.left = `${left}%`;
+        confetti.style.top = '-10px';
+        confetti.style.opacity = '1';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confetti.style.animation = `confettiFall ${duration}s ease-in forwards`;
+        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), duration * 1000);
+      }
+
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes confettiFall {
+          0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+          100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const form = document.getElementById('form');
+    const formContainer = document.getElementById('formContainer');
+    const successMessage = document.getElementById('successMessage');
+
+   form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const inputs = form.querySelectorAll('input, select, textarea');
+  let isValid = true;
+
+  inputs.forEach((input) => {
+    if (!input.value.trim()) {
+      input.style.borderColor = '#ef4444';
+      isValid = false;
+    } else {
+      input.style.borderColor = '#d1d5db';
+    }
+  });
+
+  if (!isValid) return;
+
+  const formData = {
+    fullName: form.fullName.value,
+    email: form.email.value,
+    inquiryType: form.inquiryType.value,
+    message: form.message.value
+  };
+
+  try {
+    const response = await fetch('http://localhost:3000/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // ✅ Store form data in localStorage
+      localStorage.setItem("formData", JSON.stringify(formData));
+
+      // ✅ If admin email, go to dashboard
+      if (formData.email === 'admin@gmail.com') {
+          localStorage.setItem('loggedInEmail', 'admin@gmail.com');
+          alert("data saved");
+
+      } else {
+        formContainer.style.display = 'none';
+        successMessage.style.display = 'block';
+        createConfetti();
+      }
+    } else {
+      alert(result.message || 'Something went wrong!');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Could not submit. Please try again.');
+  }
+});
+
+  </script>
+</body>
+</html>
